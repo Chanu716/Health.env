@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health.Env - Dengue Risk Predictor</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Comfortaa:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span class="theme-icon" id="themeIcon">☀️</span>
+    </button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="main-title">Health.Env</h1>
+                <p class="subtitle">Dengue Risk Prediction & Monitoring System</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard -->
+    <main class="main-container">
+        <div class="container">
+            <div class="dashboard-grid">
+                
+                <!-- Left Panel - Input Section -->
+                <aside class="input-panel">
+                    <div class="panel-header">
+                        <h2>📊 Input Parameters</h2>
+                    </div>
+
+                    <!-- Location & Time -->
+                    <div class="input-section">
+                        <h3 class="section-title">📍 Location & Time</h3>
+                        <div class="form-group">
+                            <label for="city">City</label>
+                            <select id="city" class="form-control">
+                                <option>Delhi</option>
+                                <option>Mumbai</option>
+                                <option>Chennai</option>
+                                <option>Kolkata</option>
+                                <option>Bengaluru</option>
+                                <option>Hyderabad</option>
+                                <option>Pune</option>
+                                <option>Ahmedabad</option>
+                                <option>Jaipur</option>
+                                <option>Lucknow</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="month">Month</label>
+                            <select id="month" class="form-control">
+                                <option>January</option>
+                                <option>February</option>
+                                <option>March</option>
+                                <option>April</option>
+                                <option>May</option>
+                                <option>June</option>
+                                <option selected>July</option>
+                                <option>August</option>
+                                <option>September</option>
+                                <option>October</option>
+                                <option>November</option>
+                                <option>December</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Weather Conditions -->
+                    <div class="input-section">
+                        <h3 class="section-title">🌤️ Weather Conditions</h3>
+                        <div class="form-group">
+                            <label for="temperature">Temperature: <span id="temp-value">30</span>°C</label>
+                            <input type="range" id="temperature" class="slider" min="20" max="45" value="30">
+                            <div class="slider-labels">
+                                <span>20°C</span>
+                                <span>45°C</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rainfall">Rainfall: <span id="rain-value">1200</span>mm</label>
+                            <input type="range" id="rainfall" class="slider" min="0" max="3000" value="1200" step="50">
+                            <div class="slider-labels">
+                                <span>0mm</span>
+                                <span>3000mm</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="humidity">Humidity: <span id="humid-value">75</span>%</label>
+                            <input type="range" id="humidity" class="slider" min="40" max="100" value="75">
+                            <div class="slider-labels">
+                                <span>40%</span>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Environmental Factors -->
+                    <div class="input-section">
+                        <h3 class="section-title">🌍 Environmental Factors</h3>
+                        <div class="form-group">
+                            <label for="aqi">Air Quality Index: <span id="aqi-value">150</span></label>
+                            <input type="range" id="aqi" class="slider" min="0" max="500" value="150">
+                            <div class="slider-labels">
+                                <span>0</span>
+                                <span>500</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="mosquito">Mosquito Density: <span id="mosq-value">0.65</span></label>
+                            <input type="range" id="mosquito" class="slider" min="0" max="1" value="0.65" step="0.05">
+                            <div class="slider-labels">
+                                <span>0.0</span>
+                                <span>1.0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Demographics -->
+                    <div class="input-section">
+                        <h3 class="section-title">👥 Demographics & Cases</h3>
+                        <div class="form-group">
+                            <label for="population">Population Density (people/km²)</label>
+                            <input type="number" id="population" class="form-control" value="12000" min="1000" max="50000" step="1000">
+                        </div>
+                        <div class="form-group">
+                            <label for="cases">Recent Dengue Cases</label>
+                            <input type="number" id="cases" class="form-control" value="500" min="0" max="10000" step="50">
+                        </div>
+                    </div>
+
+                    <!-- Predict Button -->
+                    <button class="btn-predict" onclick="predictRisk()">
+                        <span class="btn-icon">🔮</span>
+                        Predict Risk Level
+                    </button>
+                </aside>
+
+                <!-- Center Panel - Prediction Result -->
+                <section class="result-panel">
+                    <div class="panel-header">
+                        <h2>🎯 Prediction Result</h2>
+                    </div>
+
+                    <!-- Prediction Card -->
+                    <div class="prediction-card" id="predictionCard">
+                        <div class="prediction-location">
+                            <h3>Prediction for <span id="result-city">Delhi</span></h3>
+                            <p>Month: <span id="result-month">July</span></p>
+                        </div>
+                        
+                        <div class="risk-badge" id="riskBadge">
+                            <span class="risk-icon" id="riskIcon">🟡</span>
+                            <span class="risk-text" id="riskText">MODERATE RISK</span>
+                        </div>
+
+                        <div class="confidence-section">
+                            <div class="confidence-label">
+                                <span>Model Confidence</span>
+                                <span id="confidencePercent">87%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill" style="width: 87%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-icon">🌡️</div>
+                            <div class="metric-value" id="metric-temp">30°C</div>
+                            <div class="metric-label">Temperature</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">🦟</div>
+                            <div class="metric-value" id="metric-mosq">0.65</div>
+                            <div class="metric-label">Mosquito Density</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">📊</div>
+                            <div class="metric-value" id="metric-cases">500</div>
+                            <div class="metric-label">Recent Cases</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-icon">💨</div>
+                            <div class="metric-value" id="metric-aqi">150</div>
+                            <div class="metric-label">AQI Level</div>
+                        </div>
+                    </div>
+
+                    <!-- Recommendations -->
+                    <div class="recommendations-section">
+                        <h3 class="section-title">💡 Recommendations</h3>
+                        <div class="recommendation-card" id="recommendationCard">
+                            <div class="rec-header" id="recHeader">
+                                <span class="rec-icon">⚡</span>
+                                <span>Preventive Measures Advised</span>
+                            </div>
+                            <ul class="rec-list" id="recList">
+                                <li>🔍 Regular monitoring of mosquito breeding sites</li>
+                                <li>💊 Keep anti-dengue medication ready</li>
+                                <li>🌊 Check water storage containers weekly</li>
+                                <li>👕 Wear full-sleeve clothing during peak hours</li>
+                                <li>🏠 Use mosquito screens on windows</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right Panel - Visualizations -->
+                <section class="charts-panel">
+                    <div class="panel-header">
+                        <h2>📈 Data Insights</h2>
+                    </div>
+
+                    <!-- Chart 1: Monthly Trend -->
+                    <div class="chart-container">
+                        <h3 class="chart-title">Monthly Risk Trend</h3>
+                        <div id="trendChart" class="chart"></div>
+                    </div>
+
+                    <!-- Chart 2: Correlation -->
+                    <div class="chart-container">
+                        <h3 class="chart-title">Rainfall vs Temperature</h3>
+                        <div id="scatterChart" class="chart"></div>
+                    </div>
+
+                    <!-- Chart 3: Feature Importance -->
+                    <div class="chart-container">
+                        <h3 class="chart-title">Feature Importance</h3>
+                        <div id="importanceChart" class="chart"></div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Bottom Section - City Risk Map -->
+            <div class="city-risk-section">
+                <div class="panel-header">
+                    <h2>🗺️ City Risk Distribution Across India</h2>
+                </div>
+                
+                <div class="city-grid">
+                    <div class="city-chart-container">
+                        <div id="cityChart" class="chart-large"></div>
+                    </div>
+                    
+                    <div class="city-stats">
+                        <div class="stat-card stat-high">
+                            <div class="stat-number">5</div>
+                            <div class="stat-label">High Risk Cities</div>
+                        </div>
+                        <div class="stat-card stat-moderate">
+                            <div class="stat-number">7</div>
+                            <div class="stat-label">Moderate Risk Cities</div>
+                        </div>
+                        <div class="stat-card stat-low">
+                            <div class="stat-number">3</div>
+                            <div class="stat-label">Low Risk Cities</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Health.Env © 2025 | Dengue Risk Prediction System | Powered by ML & Environmental Data</p>
+    </footer>
+
+    <!-- Chart Modal -->
+    <div id="chartModal" class="chart-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeChartModal()">×</button>
+            <h3 class="modal-chart-title" id="modalChartTitle">Chart</h3>
+            <div id="modalChartContainer" class="modal-chart"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
