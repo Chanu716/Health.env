@@ -1,448 +1,893 @@
-# 🦟 Dengue Risk Prediction System
+# 🦟 Dengue Risk Prediction System# 🦟 Dengue Risk Prediction System
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
-[![XGBoost](https://img.shields.io/badge/XGBoost-ML-orange.svg)](https://xgboost.readthedocs.io/)
-[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An intelligent machine learning system for predicting dengue outbreak risk levels across Indian cities using real-time environmental and demographic data. Features a modern glassmorphic dashboard with interactive visualizations.
 
----
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 
-## 📊 Project Overview
+[![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)[![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
 
-This system uses an **XGBoost** machine learning model with **96.57% accuracy** to predict dengue outbreak risk levels based on weather, environmental, and epidemiological factors.
+[![XGBoost](https://img.shields.io/badge/XGBoost-ML-orange.svg)](https://xgboost.readthedocs.io/)[![XGBoost](https://img.shields.io/badge/XGBoost-ML-orange.svg)](https://xgboost.readthedocs.io/)
 
-### 🏆 Model Performance
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-| Metric | Score |
-|--------|-------|
-| **Accuracy** | 96.57% |
-| **Precision** | 96.75% |
-| **Recall** | 96.57% |
-| **F1 Score** | 96.59% |
-| **Training Data** | 15,600 records |
-| **Time Period** | 2015-2023 (8 years) |
-| **Cities Covered** | 30 Indian cities |
 
----
 
-## ✨ Key Features
+An intelligent machine learning system for predicting dengue outbreak risk levels across Indian cities using real-time environmental and demographic data. Features a modern glassmorphic dashboard with **authentic real-time data visualization** powered by the trained XGBoost model.An intelligent machine learning system for predicting dengue outbreak risk levels across Indian cities using real-time environmental and demographic data. Features a modern glassmorphic dashboard with interactive visualizations.
 
-### 🤖 Machine Learning Model
-- **XGBoost Classifier** with 96.57% accuracy
-- Trained on 15,600+ historical dengue outbreak records
-- Proper StandardScaler preprocessing
-- Multi-class classification: Low, Moderate, High risk
+
+
+------
+
+
+
+## 📊 Project Overview## 📊 Project Overview
+
+
+
+This system uses an **XGBoost Classifier** with **96.57% accuracy** to predict dengue outbreak risk levels (Low, Moderate, High) based on weather, environmental, and epidemiological factors. The dashboard displays real data from the trained model and 15,600+ historical records.This system uses an **XGBoost** machine learning model with **96.57% accuracy** to predict dengue outbreak risk levels based on weather, environmental, and epidemiological factors.
+
+
+
+### 🏆 Model Performance### 🏆 Model Performance
+
+
+
+| Metric | Score || Metric | Score |
+
+|--------|-------||--------|-------|
+
+| **Accuracy** | 96.57% || **Accuracy** | 96.57% |
+
+| **Precision** | 96.75% || **Precision** | 96.75% |
+
+| **Recall** | 96.57% || **Recall** | 96.57% |
+
+| **F1 Score** | 96.59% || **F1 Score** | 96.59% |
+
+| **Training Data** | 15,600 weekly records || **Training Data** | 15,600 records |
+
+| **Time Period** | 2015-2023 (8 years) || **Time Period** | 2015-2023 (8 years) |
+
+| **Cities** | 15 major Indian cities || **Cities Covered** | 30 Indian cities |
+
+
+
+------
+
+
+
+## ✨ Key Features## ✨ Key Features
+
+
+
+### 🤖 Machine Learning### 🤖 Machine Learning Model
+
+- **XGBoost Classifier** trained on 15,600+ historical records- **XGBoost Classifier** with 96.57% accuracy
+
+- **StandardScaler** preprocessing for accurate predictions- Trained on 15,600+ historical dengue outbreak records
+
+- **Multi-class classification**: Low (0), Moderate (1), High (2) risk- Proper StandardScaler preprocessing
+
+- **Real-time predictions** via REST API- Multi-class classification: Low, Moderate, High risk
+
 - Real-time predictions via REST API
 
 ### 📊 Real Data Visualization
-- **Monthly Risk Trends** - Actual seasonal outbreak patterns from training data
-- **Temperature vs Rainfall Correlation** - Real scatter plots by risk level
-- **Feature Importance** - Live XGBoost model feature weights
-- **City Risk Distribution** - Authentic city-wise statistics from 30 Indian cities
+
+- **Monthly Risk Trends** - Actual seasonal patterns from training data### 📊 Real Data Visualization
+
+- **Temperature vs Rainfall** - Real scatter plots by risk level (50 samples each)- **Monthly Risk Trends** - Actual seasonal outbreak patterns from training data
+
+- **Feature Importance** - Live weights from XGBoost model's `feature_importances_`- **Temperature vs Rainfall Correlation** - Real scatter plots by risk level
+
+- **City Risk Distribution** - Authentic statistics from 15 Indian cities- **Feature Importance** - Live XGBoost model feature weights
+
+- **5-minute caching** for optimal performance- **City Risk Distribution** - Authentic city-wise statistics from 30 Indian cities
+
 - All charts load real data with 5-minute caching for performance
 
 ### 🎨 Modern Dashboard
-- **Glassmorphic UI** with dark/light theme toggle
-- **Responsive 3-column layout** (sidebar | results | charts)
-- **Interactive Plotly.js charts** with zoom functionality
-- **Real-time predictions** with confidence scores
+
+- **Glassmorphic UI** with dark/light theme toggle### 🎨 Modern Dashboard
+
+- **Responsive layout**: 3-column (desktop) → 2-column (tablet) → 1-column (mobile)- **Glassmorphic UI** with dark/light theme toggle
+
+- **Interactive Plotly.js charts** with zoom and full-screen modals- **Responsive 3-column layout** (sidebar | results | charts)
+
+- **Real-time predictions** with confidence percentages- **Interactive Plotly.js charts** with zoom functionality
+
+- **Smart recommendations** based on risk level- **Real-time predictions** with confidence scores
+
 - **Personalized recommendations** based on risk level
 
-### ⚡ Performance Optimized
-- 5-minute data caching to reduce API calls
-- Lazy loading of chart data
-- Fallback static data for offline mode
-- Minimal bundle size with CDN resources
-
 ---
+
+### ⚡ Performance Optimized
+
+## 🚀 Quick Start- 5-minute data caching to reduce API calls
+
+- Lazy loading of chart data
+
+### Prerequisites- Fallback static data for offline mode
+
+```bash- Minimal bundle size with CDN resources
+
+Python 3.8+
+
+pip (Python package manager)---
+
+```
 
 ## 🚀 Quick Start
 
-### Prerequisites
-- Python 3.8+
-- pip (Python package manager)
-
 ### Installation
 
-**1. Clone the repository**
-```bash
+### Prerequisites
+
+**1. Clone the repository**- Python 3.8+
+
+```bash- pip (Python package manager)
+
 git clone https://github.com/Chanu716/Health.env.git
-cd Health.env
+
+cd Health.env### Installation
+
 ```
 
-**2. Install dependencies**
-```bash
-pip install -r requirements.txt
-```
+**1. Clone the repository**
+
+**2. Install dependencies**```bash
+
+```bashgit clone https://github.com/Chanu716/Health.env.git
+
+pip install -r requirements.txtcd Health.env
+
+``````
+
+
+
+**3. Run the API server****2. Install dependencies**
+
+```bash```bash
+
+python api.pypip install -r requirements.txt
+
+``````
+
+API starts on `http://localhost:5000`
 
 **3. Run the API server**
-```bash
-python api.py
-```
-The API will start on `http://localhost:5000`
 
-**4. Open the dashboard** (in a new terminal)
-```bash
-python -m http.server 8000
-```
+**4. Open the dashboard** (new terminal)```bash
 
-**5. Access the application**
+```bashpython api.py
+
+python -m http.server 8000```
+
+```The API will start on `http://localhost:5000`
+
+
+
+**5. Access the application****4. Open the dashboard** (in a new terminal)
+
+- 🌐 Dashboard: http://localhost:8000/index.html```bash
+
+- ❤️ Health Check: http://localhost:5000/healthpython -m http.server 8000
+
+- 📊 Model Info: http://localhost:5000/model-info```
+
+
+
+---**5. Access the application**
+
 - 🌐 Dashboard: http://localhost:8000/index.html
-- ❤️ API Health: http://localhost:5000/health
+
+## 📁 Project Structure- ❤️ API Health: http://localhost:5000/health
+
 - 📊 API Info: http://localhost:5000/model-info
 
+```
+
+Health.env/---
+
+├── api.py                      # Flask REST API with real data endpoints
+
+├── index.html                  # Glassmorphic dashboard UI## 📁 Project Structure
+
+├── script.js                   # Frontend logic with data caching
+
+├── styles.css                  # Responsive CSS styling```
+
+├── requirements.txt            # Python dependenciesHealth.env/
+
+│├── api.py                          # Flask REST API with real data endpoints
+
+├── models/                     # Trained ML models├── index.html                      # Modern glassmorphic dashboard
+
+│   ├── xgboost_model.pkl      # Main classifier (96.57% accuracy)├── script.js                       # Frontend logic with real data loading
+
+│   ├── scaler.pkl             # StandardScaler for preprocessing├── styles.css                      # Responsive CSS styling
+
+│   ├── feature_names.pkl      # Feature order preservation├── requirements.txt                # Python dependencies
+
+│   ├── random_forest_model.pkl│
+
+│   ├── decision_tree_model.pkl├── models/                         # Trained ML models
+
+│   └── logistic_regression_model.pkl│   ├── xgboost_model.pkl          # Best model (96.57% accuracy)
+
+││   ├── scaler.pkl                 # StandardScaler for preprocessing
+
+├── data/                       # Training datasets│   ├── feature_names.pkl          # Feature order preservation
+
+│   ├── dengue_data_cleaned.csv              # Cleaned training data│   ├── random_forest_model.pkl    # Alternative model
+
+│   ├── dengue_india_weekly_with_nulls.csv   # Original dataset (15,600 records)│   ├── decision_tree_model.pkl    # Baseline model
+
+│   ├── model_comparison_results.csv│   └── logistic_regression_model.pkl
+
+│   └── tuning_comparison.csv│
+
+│├── data/                           # Datasets
+
+├── notebooks/                  # Jupyter notebooks│   ├── dengue_data_cleaned.csv    # Cleaned training data
+
+│   ├── data_preprocessing.ipynb             # Data cleaning pipeline│   └── dengue_india_weekly_with_nulls.csv  # Raw data
+
+│   ├── exploratory_data_analysis.ipynb      # EDA & visualizations│
+
+│   └── model_training_evaluation.ipynb      # Model training & tuning├── notebooks/                      # Jupyter notebooks
+
+││   ├── data_preprocessing.ipynb   # Data cleaning pipeline
+
+├── results/                    # Model outputs│   ├── exploratory_data_analysis.ipynb  # EDA visualizations
+
+│   ├── confusion_matrices_all_models.png│   └── model_training_evaluation.ipynb  # Model training & tuning
+
+│   ├── model_performance_comparison.png│
+
+│   ├── roc_curves_all_models.png├── results/                        # Training results
+
+│   ├── hyperparameter_tuning_comparison.png│   ├── *.png                       # Performance visualizations
+
+│   └── hyperparameter_tuning_results.json│   ├── hyperparameter_tuning_results.json
+
+││   └── model_comparison_results.csv
+
+└── docs/                       # Documentation│
+
+    ├── HYPERPARAMETER_TUNING_GUIDE.md└── docs/                           # Documentation
+
+    └── README_Dashboard.md    ├── README_Dashboard.md
+
+```    └── HYPERPARAMETER_TUNING_GUIDE.md
+
+```
+
 ---
-
-## 📁 Project Structure
-
-```
-Health.env/
-├── api.py                          # Flask REST API with real data endpoints
-├── index.html                      # Modern glassmorphic dashboard
-├── script.js                       # Frontend logic with real data loading
-├── styles.css                      # Responsive CSS styling
-├── requirements.txt                # Python dependencies
-│
-├── models/                         # Trained ML models
-│   ├── xgboost_model.pkl          # Best model (96.57% accuracy)
-│   ├── scaler.pkl                 # StandardScaler for preprocessing
-│   ├── feature_names.pkl          # Feature order preservation
-│   ├── random_forest_model.pkl    # Alternative model
-│   ├── decision_tree_model.pkl    # Baseline model
-│   └── logistic_regression_model.pkl
-│
-├── data/                           # Datasets
-│   ├── dengue_data_cleaned.csv    # Cleaned training data
-│   └── dengue_india_weekly_with_nulls.csv  # Raw data
-│
-├── notebooks/                      # Jupyter notebooks
-│   ├── data_preprocessing.ipynb   # Data cleaning pipeline
-│   ├── exploratory_data_analysis.ipynb  # EDA visualizations
-│   └── model_training_evaluation.ipynb  # Model training & tuning
-│
-├── results/                        # Training results
-│   ├── *.png                       # Performance visualizations
-│   ├── hyperparameter_tuning_results.json
-│   └── model_comparison_results.csv
-│
-└── docs/                           # Documentation
-    ├── README_Dashboard.md
-    └── HYPERPARAMETER_TUNING_GUIDE.md
-```
 
 ---
 
 ## 🔧 API Endpoints
 
+## 🔧 API Endpoints
+
 ### 1. Health Check
-```http
-GET /health
-```
-Returns API status and uptime.
 
-**Response:**
-```json
+```http### 1. Health Check
+
+GET /health```http
+
+```GET /health
+
+**Response:**```
+
+```jsonReturns API status and uptime.
+
 {
-  "status": "healthy",
+
+  "status": "healthy",**Response:**
+
+  "model_loaded": true```json
+
+}{
+
+```  "status": "healthy",
+
   "model_loaded": true
-}
-```
 
-### 2. Predict Risk
-```http
+### 2. Predict Risk}
+
+```http```
+
 POST /predict
-Content-Type: application/json
-```
 
-**Request Body:**
-```json
-{
-  "city": "Mumbai",
-  "month": "July",
+Content-Type: application/json### 2. Predict Risk
+
+```http
+
+{POST /predict
+
+  "city": "Mumbai",Content-Type: application/json
+
+  "month": "July",```
+
   "temperature": 28.5,
-  "rainfall": 150.0,
-  "humidity": 85.0,
-  "aqi": 120,
-  "mosquito": 0.8,
-  "population": 50000,
-  "cases": 45
-}
+
+  "rainfall": 150.0,**Request Body:**
+
+  "humidity": 85.0,```json
+
+  "aqi": 120,{
+
+  "mosquito": 0.8,  "city": "Mumbai",
+
+  "population": 50000,  "month": "July",
+
+  "cases": 45  "temperature": 28.5,
+
+}  "rainfall": 150.0,
+
+```  "humidity": 85.0,
+
+**Response:**  "aqi": 120,
+
+```json  "mosquito": 0.8,
+
+{  "population": 50000,
+
+  "success": true,  "cases": 45
+
+  "prediction": {}
+
+    "risk_level": "High",```
+
+    "risk_code": 2,
+
+    "confidence": 87.45,**Response:**
+
+    "color": "#ff3366",```json
+
+    "icon": "🔴"{
+
+  },  "success": true,
+
+  "probabilities": {  "prediction": {
+
+    "low": 3.22,    "risk_level": "High",
+
+    "moderate": 9.33,    "risk_code": 2,
+
+    "high": 87.45    "confidence": 87.5,
+
+  }    "color": "#ff3366",
+
+}    "icon": "🔴"
+
+```  },
+
+  "probabilities": {
+
+### 3. Feature Importance (Real Model Data)    "low": 5.2,
+
+```http    "moderate": 7.3,
+
+GET /api/feature-importance    "high": 87.5
+
+```  }
+
+Returns actual XGBoost feature weights.}
+
 ```
 
 **Response:**
-```json
-{
-  "success": true,
-  "prediction": {
-    "risk_level": "High",
-    "risk_code": 2,
-    "confidence": 87.5,
-    "color": "#ff3366",
-    "icon": "🔴"
-  },
-  "probabilities": {
-    "low": 5.2,
-    "moderate": 7.3,
-    "high": 87.5
-  }
-}
-```
 
-### 3. Feature Importance
-```http
-GET /api/feature-importance
-```
-Returns real feature importance values from the trained XGBoost model.
+```json### 3. Feature Importance
 
-### 4. Training Statistics
-```http
-GET /api/training-stats
-```
-Returns aggregated statistics from training data:
+{```http
+
+  "success": true,GET /api/feature-importance
+
+  "feature_importance": [```
+
+    {"feature": "Dengue Cases Reported", "importance": 0.40009},Returns real feature importance values from the trained XGBoost model.
+
+    {"feature": "Mosquito Density", "importance": 0.32160},
+
+    {"feature": "Rainfall (mm)", "importance": 0.09720},### 4. Training Statistics
+
+    ...```http
+
+  ]GET /api/training-stats
+
+}```
+
+```Returns aggregated statistics from training data:
+
 - Monthly risk trends (12 months)
-- Temperature vs Rainfall correlation data
-- City-wise risk distribution
 
-### 5. Model Information
-```http
+### 4. Training Statistics (Real Data)- Temperature vs Rainfall correlation data
+
+```http- City-wise risk distribution
+
+GET /api/training-stats
+
+```### 5. Model Information
+
+Returns aggregated data from 15,600 training records.```http
+
 GET /model-info
-```
-Returns model metadata and performance metrics.
 
----
+**Response:**```
 
-## 🎯 How to Use
+```jsonReturns model metadata and performance metrics.
 
-### Dashboard Input Fields
+{
 
-1. **City** - Select from 30 Indian cities
-2. **Month** - Choose the month for prediction
-3. **Temperature** - Average temperature (20-45°C)
-4. **Rainfall** - Monthly rainfall (0-3000mm)
-5. **Humidity** - Relative humidity (40-100%)
-6. **AQI** - Air Quality Index (0-500)
-7. **Mosquito Density** - Breeding site density (0-1)
-8. **Population Density** - People per sq km
-9. **Cases Reported** - Previous dengue cases
+  "success": true,---
 
-### Making Predictions
+  "monthly_risk": {
 
-1. Fill in all input fields
-2. Click "Predict Risk" button
-3. View risk level:
+    "1.0": 0.0, "6.0": 0.7855, "7.0": 0.7877, ...## 🎯 How to Use
+
+  },
+
+  "scatter_data": {### Dashboard Input Fields
+
+    "low": {"rainfall": [...], "temperature": [...]},
+
+    "moderate": {"rainfall": [...], "temperature": [...]},1. **City** - Select from 30 Indian cities
+
+    "high": {"rainfall": [...], "temperature": [...]}2. **Month** - Choose the month for prediction
+
+  },3. **Temperature** - Average temperature (20-45°C)
+
+  "city_risk": {4. **Rainfall** - Monthly rainfall (0-3000mm)
+
+    "Kolkata": 0.4406, "Chennai": 0.3959, "Mumbai": 0.3612, ...5. **Humidity** - Relative humidity (40-100%)
+
+  },6. **AQI** - Air Quality Index (0-500)
+
+  "total_records": 156007. **Mosquito Density** - Breeding site density (0-1)
+
+}8. **Population Density** - People per sq km
+
+```9. **Cases Reported** - Previous dengue cases
+
+
+
+### 5. Model Information### Making Predictions
+
+```http
+
+GET /model-info1. Fill in all input fields
+
+```2. Click "Predict Risk" button
+
+Returns model metadata and performance metrics.3. View risk level:
+
    - 🟢 **LOW RISK** (Blue) - Routine monitoring
-   - 🟡 **MODERATE RISK** (Green) - Enhanced surveillance
+
+---   - 🟡 **MODERATE RISK** (Green) - Enhanced surveillance
+
    - 🔴 **HIGH RISK** (Red) - Immediate action required
 
+## 🎯 Feature Importance (Real Model Values)
+
 ---
+
+From the trained XGBoost model's `feature_importances_` attribute:
 
 ## 📊 Features
 
-### Input Features (12 total)
-- Year
-- Week
-- Temperature (°C)
-- Rainfall (mm)
-- Humidity (%)
-- Air Quality Index (AQI)
-- Mosquito Density
-- Population Density
-- Dengue Cases Reported
-- Latitude
-- Longitude
-- Month Number
+| Rank | Feature | Importance |
 
-### Supported Cities (30)
+|------|---------|-----------|### Input Features (12 total)
+
+| 1 | Dengue Cases Reported | 40.01% |- Year
+
+| 2 | Mosquito Density | 32.16% |- Week
+
+| 3 | Rainfall (mm) | 9.72% |- Temperature (°C)
+
+| 4 | Week | 8.24% |- Rainfall (mm)
+
+| 5 | Temperature (°C) | 2.18% |- Humidity (%)
+
+| 6 | Population Density | 2.04% |- Air Quality Index (AQI)
+
+| 7 | Month_Num | 1.21% |- Mosquito Density
+
+| 8 | Humidity (%) | 1.08% |- Population Density
+
+| 9 | Longitude | 0.94% |- Dengue Cases Reported
+
+| 10 | AQI | 0.84% |- Latitude
+
+| 11 | Latitude | 0.81% |- Longitude
+
+| 12 | Year | 0.78% |- Month Number
+
+
+
+---### Supported Cities (30)
+
 Mumbai, Delhi, Bangalore, Hyderabad, Chennai, Kolkata, Pune, Ahmedabad, Jaipur, Lucknow, Kanpur, Nagpur, Indore, Thane, Bhopal, Visakhapatnam, Pimpri-Chinchwad, Patna, Vadodara, Ghaziabad, Ludhiana, Agra, Nashik, Faridabad, Meerut, Rajkot, Kalyan-Dombivli, Vasai-Virar, Varanasi, Srinagar
 
+## 🎨 Dashboard Features
+
 ---
 
-## 🔬 Data Science Workflow
+### Theme Toggle
 
-### 1. Data Preprocessing
+- **Dark Theme** (default): Glassmorphic design with blur effects## 🔬 Data Science Workflow
+
+- **Light Theme**: Neumorphic design with soft shadows
+
+- Preference saved to localStorage### 1. Data Preprocessing
+
 - Handled missing values and outliers
-- Feature engineering (Month_Num, seasonal indicators)
-- Label encoding for risk levels (Low=0, Moderate=1, High=2)
-- StandardScaler normalization
+
+### Responsive Design- Feature engineering (Month_Num, seasonal indicators)
+
+- **Desktop (>1400px)**: 3-column grid (sidebar | results | charts)- Label encoding for risk levels (Low=0, Moderate=1, High=2)
+
+- **Tablet (768px-1400px)**: 2-column layout- StandardScaler normalization
+
+- **Mobile (<768px)**: Single column stack
 
 ### 2. Model Training
-- Tested 4 algorithms: Logistic Regression, Decision Tree, Random Forest, XGBoost
-- XGBoost selected for best performance
-- Hyperparameter tuning with GridSearchCV
-- 80-20 train-test split with stratification
+
+### Interactive Charts- Tested 4 algorithms: Logistic Regression, Decision Tree, Random Forest, XGBoost
+
+- Click any chart for full-screen modal with zoom- XGBoost selected for best performance
+
+- Real-time data loading from API- Hyperparameter tuning with GridSearchCV
+
+- Smooth animations and theme transitions- 80-20 train-test split with stratification
+
+- Automatic color adaptation
 
 ### 3. Model Validation
-- 5-fold cross-validation
-- Confusion matrix analysis
-- Feature importance visualization
-- Real-world test scenarios validated
 
-### 4. Hyperparameter Tuning
-- **Method:** GridSearchCV with 5-fold cross-validation
-- **Combinations tested:** 3,840 parameter combinations
-- **Best XGBoost parameters:**
-  - n_estimators: 200
+### Input Controls- 5-fold cross-validation
+
+- **City**: 15 Indian cities dropdown- Confusion matrix analysis
+
+- **Month**: Seasonal selector (1-12)- Feature importance visualization
+
+- **Temperature**: 10-45°C slider- Real-world test scenarios validated
+
+- **Rainfall**: 0-300mm slider
+
+- **Humidity**: 30-100% slider### 4. Hyperparameter Tuning
+
+- **AQI**: 0-500 slider- **Method:** GridSearchCV with 5-fold cross-validation
+
+- **Mosquito Density**: 0-1 slider- **Combinations tested:** 3,840 parameter combinations
+
+- **Population Density**: Manual input- **Best XGBoost parameters:**
+
+- **Cases Reported**: Manual input  - n_estimators: 200
+
   - max_depth: 7
-  - learning_rate: 0.1
+
+---  - learning_rate: 0.1
+
   - subsample: 0.9
-  - colsample_bytree: 0.9
 
-### Feature Importance (from trained model)
-1. **Dengue Cases Reported** - 40.01%
-2. **Mosquito Density** - 32.16%
-3. **Rainfall** - 9.72%
-4. **Week** - 8.24%
-5. **Temperature** - 2.18%
+## 🔬 Data Science Workflow  - colsample_bytree: 0.9
+
+
+
+### 1. Data Preprocessing### Feature Importance (from trained model)
+
+- Handled missing values using median/mode imputation1. **Dengue Cases Reported** - 40.01%
+
+- Removed outliers using IQR method2. **Mosquito Density** - 32.16%
+
+- Feature engineering: `Month_Num` from month names3. **Rainfall** - 9.72%
+
+- Label encoding: Low=0, Moderate=1, High=24. **Week** - 8.24%
+
+- StandardScaler normalization (critical for accuracy)5. **Temperature** - 2.18%
+
 6. **Population Density** - 2.04%
-7. Other features - 5.65%
 
----
+### 2. Model Training7. Other features - 5.65%
 
-## 🛠️ Technology Stack
+- Tested 4 algorithms: Logistic Regression, Decision Tree, Random Forest, XGBoost
+
+- **XGBoost** selected for best performance (96.57% accuracy)---
+
+- 80-20 train-test split with stratification
+
+- GridSearchCV hyperparameter tuning## 🛠️ Technology Stack
+
+- 5-fold cross-validation
 
 ### Backend
-- **Flask 3.0.0** - REST API framework
-- **XGBoost 2.0.3** - Gradient boosting classifier
-- **Scikit-learn 1.3.2** - ML utilities and preprocessing
-- **Pandas 2.1.4** - Data manipulation
-- **NumPy 1.26.2** - Numerical computing
+
+### 3. Model Validation- **Flask 3.0.0** - REST API framework
+
+- Confusion matrix analysis- **XGBoost 2.0.3** - Gradient boosting classifier
+
+- ROC curve and AUC scores- **Scikit-learn 1.3.2** - ML utilities and preprocessing
+
+- Feature importance visualization- **Pandas 2.1.4** - Data manipulation
+
+- Real-world test scenarios (85.7% accuracy on diverse cases)- **NumPy 1.26.2** - Numerical computing
+
 - **Flask-CORS 4.0.1** - Cross-origin requests
 
-### Frontend
+### 4. Critical Bug Fix
+
+**Issue**: Model initially predicted 100% High risk### Frontend
+
 - **Vanilla JavaScript (ES6)** - Frontend logic
-- **Plotly.js 2.27.0** - Interactive data visualization
+
+**Root Cause**: StandardScaler used in training but not in API- **Plotly.js 2.27.0** - Interactive data visualization
+
 - **CSS Grid & Flexbox** - Responsive layout
-- **Glassmorphism** - Modern UI design
+
+**Solution**:- **Glassmorphism** - Modern UI design
+
+- Retrained model and saved `scaler.pkl` separately
+
+- Updated API: `scaler.transform(features)`### Fonts
+
+- Result: Proper Low/Moderate/High distribution restored- **Barlow** - Primary UI font
+
+- **Comfortaa** - Display headings
+
+---- **JetBrains Mono** - Monospace numbers
+
+
+
+## 🛠️ Technology Stack---
+
+
+
+### Backend## 🐛 Troubleshooting
+
+| Technology | Version | Purpose |
+
+|------------|---------|---------|### API Not Starting
+
+| Flask | 3.0.0 | REST API framework |```bash
+
+| XGBoost | 2.0.3 | Gradient boosting classifier |# Check if port 5000 is available
+
+| Scikit-learn | 1.4.0 | ML utilities & preprocessing |netstat -ano | findstr :5000
+
+| Pandas | 2.1.4 | Data manipulation |
+
+| NumPy | 1.26.3 | Numerical computing |# Try different port (edit api.py to change port)
+
+| Flask-CORS | 4.0.1 | Cross-origin requests |python api.py
+
+```
+
+### Frontend
+
+| Technology | Version | Purpose |### Model Not Loading
+
+|------------|---------|---------|```bash
+
+| Vanilla JavaScript | ES6 | Frontend logic (no frameworks) |# Verify model file exists
+
+| Plotly.js | 2.27.0 | Interactive visualizations |dir models\xgboost_model.pkl
+
+| CSS Grid & Flexbox | CSS3 | Responsive layout |
+
+| Glassmorphism | CSS | Modern UI design |# Check file size (should be ~500KB)
+
+```
 
 ### Fonts
-- **Barlow** - Primary UI font
-- **Comfortaa** - Display headings
-- **JetBrains Mono** - Monospace numbers
 
----
+- **Barlow** - Primary UI font### CORS Errors
 
-## 🐛 Troubleshooting
+- **Comfortaa** - Display headings- Ensure Flask-CORS is installed
 
-### API Not Starting
-```bash
-# Check if port 5000 is available
-netstat -ano | findstr :5000
+- **JetBrains Mono** - Monospace numbers- Check browser console for details
 
-# Try different port (edit api.py to change port)
-python api.py
-```
-
-### Model Not Loading
-```bash
-# Verify model file exists
-dir models\xgboost_model.pkl
-
-# Check file size (should be ~500KB)
-```
-
-### CORS Errors
-- Ensure Flask-CORS is installed
-- Check browser console for details
 - Use a local web server instead of file://
 
 ---
 
+---
+
+## 📊 Data Sources
+
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+### Training Dataset
 
-1. Fork the repository
+- **Records**: 15,600 weekly recordsContributions are welcome! Please follow these steps:
+
+- **Period**: 2015-2023 (8 years)
+
+- **Cities**: Delhi, Mumbai, Bangalore, Chennai, Kolkata, Hyderabad, Pune, Ahmedabad, Jaipur, Lucknow, Indore, Bhopal, Nagpur, Surat, Kanpur1. Fork the repository
+
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
 
-### Development Guidelines
-- Follow PEP 8 for Python code
-- Use ESLint for JavaScript
-- Add comments for complex logic
-- Update documentation for new features
-- Test thoroughly before submitting PR
+### Features (12 total)3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
 
----
+1. Year - Temporal feature4. Push to the branch (`git push origin feature/AmazingFeature`)
+
+2. Week - Week number (1-52)5. Open a Pull Request
+
+3. Temperature (°C) - Average weekly
+
+4. Rainfall (mm) - Average weekly### Development Guidelines
+
+5. Humidity (%) - Average- Follow PEP 8 for Python code
+
+6. AQI - Air Quality Index- Use ESLint for JavaScript
+
+7. Mosquito Density - Index (0-1)- Add comments for complex logic
+
+8. Population Density - People per sq km- Update documentation for new features
+
+9. Dengue Cases Reported - Weekly cases- Test thoroughly before submitting PR
+
+10. Latitude - City coordinates
+
+11. Longitude - City coordinates---
+
+12. Month_Num - Month (1-12)
 
 ## 📝 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+### Risk Distribution
 
----
+- **Low Risk**: 52.2% (8,143 records)This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
-## 🙏 Acknowledgments
+- **Moderate Risk**: 20.1% (3,136 records)
 
-- **Dataset**: Based on Indian dengue outbreak historical records (2015-2023)
+- **High Risk**: 27.7% (4,321 records)---
+
+
+
+---## 🙏 Acknowledgments
+
+
+
+## 🤝 Contributing- **Dataset**: Based on Indian dengue outbreak historical records (2015-2023)
+
 - **XGBoost**: Excellent gradient boosting library
-- **Plotly.js**: Beautiful interactive visualization library
+
+Contributions are welcome! Please follow these steps:- **Plotly.js**: Beautiful interactive visualization library
+
 - **Flask**: Lightweight and powerful web framework
-- **Indian Health Departments**: For providing dengue outbreak data
+
+1. Fork the repository- **Indian Health Departments**: For providing dengue outbreak data
+
+2. Create feature branch: `git checkout -b feature/AmazingFeature`
+
+3. Commit changes: `git commit -m 'Add AmazingFeature'`---
+
+4. Push to branch: `git push origin feature/AmazingFeature`
+
+5. Open a Pull Request## 📧 Contact & Support
+
+
+
+### Development Guidelines- **GitHub**: [@Chanu716](https://github.com/Chanu716)
+
+- Follow PEP 8 for Python code- **Repository**: [Health.env](https://github.com/Chanu716/Health.env)
+
+- Use ESLint for JavaScript- **Issues**: [Report a bug](https://github.com/Chanu716/Health.env/issues)
+
+- Add comments for complex logic
+
+- Update documentation for new featuresFor questions, feedback, or collaboration opportunities, please open an issue on GitHub.
+
+- Test thoroughly before submitting PR
 
 ---
-
-## 📧 Contact & Support
-
-- **GitHub**: [@Chanu716](https://github.com/Chanu716)
-- **Repository**: [Health.env](https://github.com/Chanu716/Health.env)
-- **Issues**: [Report a bug](https://github.com/Chanu716/Health.env/issues)
-
-For questions, feedback, or collaboration opportunities, please open an issue on GitHub.
 
 ---
 
 ## 🎓 Future Enhancements
 
-- [ ] Deploy on cloud (AWS/Azure/Heroku)
-- [ ] Add batch prediction endpoint
-- [ ] Implement user authentication
-- [ ] Mobile app version
-- [ ] Real-time weather API integration
-- [ ] Historical prediction tracking
-- [ ] Email alerts for high-risk predictions
-- [ ] Model retraining pipeline
-- [ ] Multi-language support
+## 📝 License
 
----
+- [ ] Deploy on cloud (AWS/Azure/Heroku)
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.- [ ] Add batch prediction endpoint
+
+- [ ] Implement user authentication
+
+---- [ ] Mobile app version
+
+- [ ] Real-time weather API integration
+
+## 🙏 Acknowledgments- [ ] Historical prediction tracking
+
+- [ ] Email alerts for high-risk predictions
+
+- **Dataset**: Indian dengue outbreak historical records (2015-2023)- [ ] Model retraining pipeline
+
+- **XGBoost**: Excellent gradient boosting library- [ ] Multi-language support
+
+- **Plotly.js**: Beautiful interactive visualization library
+
+- **Flask**: Lightweight and powerful web framework---
+
+- **Indian Health Departments**: For dengue outbreak data
 
 <div align="center">
 
+---
+
 **Made with ❤️ for better dengue outbreak prevention**
+
+## 📧 Contact
 
 ⭐ Star this repo if you found it helpful!
 
-</div>w": 3.22,├── models/                     # Trained models3. **Temperature** - Average temperature (20-45°C)
+- **GitHub**: [@Chanu716](https://github.com/Chanu716)
+
+- **Repository**: [Health.env](https://github.com/Chanu716/Health.env)</div>w": 3.22,├── models/                     # Trained models3. **Temperature** - Average temperature (20-45°C)
+
+- **Issues**: [Report a bug](https://github.com/Chanu716/Health.env/issues)
 
     "moderate": 9.33,
 
+For questions or feedback, please open an issue on GitHub.
+
     "high": 87.45│   ├── xgboost_model.pkl      # Main XGBoost classifier (96.57% accuracy)4. **Rainfall** - Monthly rainfall (0-3000mm)
+
+---
 
   },
 
+## 🎓 Future Enhancements
+
   "input_data": { ... }│   ├── scaler.pkl             # StandardScaler for preprocessing5. **Humidity** - Relative humidity (40-100%)
 
-}
+- [ ] Deploy to cloud (AWS/Azure/Heroku)
 
-```│   ├── feature_names.pkl      # Feature order preservation6. **AQI** - Air Quality Index (0-500)
+- [ ] Add batch prediction endpoint}
+
+- [ ] Implement user authentication
+
+- [ ] Mobile app version (React Native)```│   ├── feature_names.pkl      # Feature order preservation6. **AQI** - Air Quality Index (0-500)
+
+- [ ] Real-time weather API integration
+
+- [ ] Historical prediction tracking
+
+- [ ] Email alerts for high-risk predictions
+
+- [ ] Model retraining pipeline with MLflow### 3. Feature Importance (Real Model Data)│   └── ...                    # Other model files7. **Mosquito Density** - Breeding site density (0-1)
+
+- [ ] A/B testing framework
+
+- [ ] Multi-language support (Hindi, Tamil, etc.)```http
 
 
 
-### 3. Feature Importance (Real Model Data)│   └── ...                    # Other model files7. **Mosquito Density** - Breeding site density (0-1)
-
-```http
-
-GET /api/feature-importance│8. **Population Density** - People per sq km
-
-```
-
-Returns actual feature importance from the trained XGBoost model.├── data/                       # Training datasets9. **Cases Reported** - Previous dengue cases
+---GET /api/feature-importance│8. **Population Density** - People per sq km
 
 
 
-**Response:**│   ├── dengue_data_cleaned.csv               # Cleaned training data
+<div align="center">```
+
+
+
+**Made with ❤️ for better dengue outbreak prevention**Returns actual feature importance from the trained XGBoost model.├── data/                       # Training datasets9. **Cases Reported** - Previous dengue cases
+
+
+
+⭐ Star this repo if you found it helpful!
+
+
+
+</div>**Response:**│   ├── dengue_data_cleaned.csv               # Cleaned training data
+
 
 ```json
 
