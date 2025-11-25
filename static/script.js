@@ -111,13 +111,22 @@ async function predictRisk() {
             })
         });
 
-        if (!response.ok) {
-            throw new Error('API request failed');
+        const dataText = await response.text();
+        let data = null;
+        try {
+            data = JSON.parse(dataText);
+        } catch (err) {
+            console.error('Failed to parse JSON from API:', dataText);
+            throw new Error('API returned non-JSON response');
         }
 
-        const data = await response.json();
+        if (!response.ok) {
+            console.error('API error response:', data);
+            throw new Error(data.error || 'API request failed');
+        }
 
         if (!data.success) {
+            console.error('API indicated failure:', data);
             throw new Error(data.error || 'Prediction failed');
         }
 

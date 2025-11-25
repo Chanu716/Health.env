@@ -209,33 +209,53 @@ def predict():
         ]])
         
         # CRITICAL: Scale features using the same scaler from training
-        features_scaled = SCALER.transform(features)
-        
+        if SCALER is None:
+            return jsonify({'success': False, 'error': 'Server scaler is not loaded'}), 500
+
+        try:
+            features_scaled = SCALER.transform(features)
+        except Exception as e:
+            print('Scaler transform failed:', e)
+            return jsonify({'success': False, 'error': f'Scaler transform failed: {str(e)}'}), 500
+
         # Make prediction with scaled features
+        if not MODEL_REGISTRY:
+            return jsonify({'success': False, 'error': 'No models loaded on server'}), 500
+
         predictions = {}
         for name, model in MODEL_REGISTRY.items():
-            prediction = model.predict(features_scaled)[0]
-            probabilities = model.predict_proba(features_scaled)[0]
-            
-            # Get risk details
-            risk_level = RISK_LABELS[prediction]
-            risk_color = RISK_COLORS[prediction]
-            risk_icon = RISK_ICONS[prediction]
-            confidence = float(probabilities[prediction])
-            
-            # Store prediction result
-            predictions[name] = {
-                'risk_level': risk_level,
-                'risk_code': int(prediction),
-                'confidence': round(confidence * 100, 2),
-                'color': risk_color,
-                'icon': risk_icon,
-                'probabilities': {
-                    'low': round(float(probabilities[0]) * 100, 2),
-                    'moderate': round(float(probabilities[1]) * 100, 2),
-                    'high': round(float(probabilities[2]) * 100, 2)
+            try:
+                prediction = model.predict(features_scaled)[0]
+                # Some models may not implement predict_proba; handle gracefully
+                probabilities = None
+                if hasattr(model, 'predict_proba'):
+                    try:
+                        probabilities = model.predict_proba(features_scaled)[0]
+                    except Exception:
+                        probabilities = None
+
+                # Map risk and confidence
+                risk_level = RISK_LABELS.get(int(prediction), 'Unknown')
+                risk_code = int(prediction)
+                confidence = None
+                if probabilities is not None and len(probabilities) > risk_code:
+                    confidence = float(probabilities[risk_code])
+
+                predictions[name] = {
+                    'risk_level': risk_level,
+                    'risk_code': risk_code,
+                    'confidence': round(confidence * 100, 2) if confidence is not None else None,
+                    'color': RISK_COLORS.get(risk_code),
+                    'icon': RISK_ICONS.get(risk_code),
+                    'probabilities': {
+                        'low': round(float(probabilities[0]) * 100, 2) if probabilities is not None and len(probabilities) > 0 else None,
+                        'moderate': round(float(probabilities[1]) * 100, 2) if probabilities is not None and len(probabilities) > 1 else None,
+                        'high': round(float(probabilities[2]) * 100, 2) if probabilities is not None and len(probabilities) > 2 else None
+                    } if probabilities is not None else None
                 }
-            }
+            except Exception as e:
+                print(f'Prediction failed for model {name}:', e)
+                predictions[name] = {'error': f'Prediction failed: {str(e)}'}
         
         # Prepare response
         response = {
@@ -278,11 +298,6 @@ def model_info():
     return jsonify({
         'loaded_models': loaded,
         'comparison': comparison,
-        'model_type': 'XGBoost Classifier',
-        'accuracy': 0.9657,
-        'precision': 0.9675,
-        'recall': 0.9657,
-        'f1_score': 0.9659,
         'features': FEATURE_NAMES,
         'supported_cities': list(CITY_COORDS.keys()),
         'risk_levels': RISK_LABELS
