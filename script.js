@@ -1,6 +1,8 @@
 // ===========================
 // THEME TOGGLE
 // ===========================
+// API base URL - will be empty string for same-origin deployment
+const API_BASE_URL = window.API_BASE_URL || '';
 function toggleTheme() {
     const html = document.documentElement;
     const currentTheme = html.getAttribute('data-theme');
@@ -91,7 +93,7 @@ async function predictRisk() {
 
     try {
         // Call the Python API
-        const response = await fetch('http://localhost:5000/predict', {
+        const response = await fetch(`${API_BASE_URL}/predict`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

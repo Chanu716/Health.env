@@ -5,6 +5,7 @@ Serves the trained XGBoost model for real-time predictions
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask import send_from_directory
 import os
 import pickle
 import pandas as pd
@@ -14,6 +15,26 @@ warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend access
+
+
+# Serve the static dashboard files from the repo root (index, script, styles)
+@app.route('/', methods=['GET'])
+def serve_index():
+    try:
+        return send_from_directory(os.path.dirname(__file__), 'index.html')
+    except Exception:
+        return jsonify({'error': 'Index file not found'}), 404
+
+
+@app.route('/<path:filename>', methods=['GET'])
+def serve_files(filename):
+    # Serve JS/CSS and other static assets from repo root if present
+    root = os.path.dirname(__file__)
+    possible = os.path.join(root, filename)
+    if os.path.exists(possible):
+        return send_from_directory(root, filename)
+    # fallback to static folder
+    return send_from_directory(os.path.join(root, 'static'), filename)
 
 # --- Model loader: support multiple serialized models ---
 MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
@@ -45,12 +66,26 @@ for fn in os.listdir(MODEL_DIR):
             print("Could not load model", fn, e)
 
 # Feature names (must match training data order)
-FEATURE_NAMES = [
-    'Year', 'Week', 'Temperature (°C)', 'Rainfall (mm)', 
-    'Humidity (%)', 'AQI', 'Mosquito Density', 
-    'Population Density', 'Dengue Cases Reported',
-    'Latitude', 'Longitude', 'Month_Num'
-]
+# Try to load feature names file from models/ if available (e.g. feature_names_15.pkl)
+FEATURE_NAMES = None
+for fn in os.listdir(MODEL_DIR):
+    if fn.startswith('feature_names') and fn.endswith('.pkl'):
+        try:
+            with open(os.path.join(MODEL_DIR, fn), 'rb') as f:
+                FEATURE_NAMES = pickle.load(f)
+            print(f"Loaded feature names from {fn}: {len(FEATURE_NAMES)} features")
+            break
+        except Exception as e:
+            print(f"Failed to load feature names from {fn}: {e}")
+
+# Fallback default feature list (keeps backward compatibility)
+if FEATURE_NAMES is None:
+    FEATURE_NAMES = [
+        'Year', 'Week', 'Temperature (°C)', 'Rainfall (mm)', 
+        'Humidity (%)', 'AQI', 'Mosquito Density', 
+        'Population Density', 'Dengue Cases Reported',
+        'Latitude', 'Longitude', 'Month_Num'
+    ]
 
 # City coordinates mapping
 CITY_COORDS = {
@@ -357,11 +392,12 @@ def get_training_stats():
 
 
 if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
     print("="*60)
     print("🦟 Dengue Risk Prediction API")
     print("="*60)
-    print(f"Model: XGBoost Classifier")
-    print(f"Accuracy: 96.57%")
-    print(f"Endpoint: http://localhost:5000/predict")
+    print(f"Loaded models: {list(MODEL_REGISTRY.keys())}")
+    print(f"Using scaler: {'yes' if SCALER is not None else 'no'}")
+    print(f"Listening on port: {port}")
     print("="*60)
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=port)
