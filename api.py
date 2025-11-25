@@ -3,9 +3,8 @@ Dengue Risk Prediction API
 Serves the trained XGBoost model for real-time predictions
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template, send_from_directory
 from flask_cors import CORS
-from flask import send_from_directory
 import os
 import pickle
 import pandas as pd
@@ -13,15 +12,15 @@ import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)  # Enable CORS for frontend access
 
 
-# Serve the static dashboard files from the repo root (index, script, styles)
 @app.route('/', methods=['GET'])
 def serve_index():
+    """Render the dashboard template from `templates/index.html`."""
     try:
-        return send_from_directory(os.path.dirname(__file__), 'index.html')
+        return render_template('index.html')
     except Exception:
         return jsonify({'error': 'Index file not found'}), 404
 
@@ -33,8 +32,12 @@ def serve_files(filename):
     possible = os.path.join(root, filename)
     if os.path.exists(possible):
         return send_from_directory(root, filename)
-    # fallback to static folder
-    return send_from_directory(os.path.join(root, 'static'), filename)
+    # fallback to the Flask static folder
+    static_path = os.path.join(root, app.static_folder)
+    target = os.path.join(static_path, filename)
+    if os.path.exists(target):
+        return send_from_directory(static_path, filename)
+    return jsonify({'error': f'File {filename} not found'}), 404
 
 # --- Model loader: support multiple serialized models ---
 MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
