@@ -11,6 +11,13 @@ ENV/
 dist/
 build/
 
+.venv/
+.venv311/
+.env/
+*.pyc
+__pycache__/
+
+
 # Jupyter Notebook
 .ipynb_checkpoints
 *.ipynb_checkpoints

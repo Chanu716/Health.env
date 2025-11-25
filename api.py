@@ -5,31 +5,44 @@ Serves the trained XGBoost model for real-time predictions
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import os
 import pickle
-import numpy as np
 import pandas as pd
+import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend access
 
-# Load the best trained model (XGBoost) and scaler
-MODEL_PATH = 'models/xgboost_model.pkl'
-SCALER_PATH = 'models/scaler.pkl'
+# --- Model loader: support multiple serialized models ---
+MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
+MODEL_REGISTRY = {}
+SCALER = None
 
+# load scaler if available
+scaler_path = os.path.join(MODEL_DIR, 'scaler.pkl')
 try:
-    with open(MODEL_PATH, 'rb') as f:
-        model = pickle.load(f)
-    print(f"✅ Model loaded successfully from {MODEL_PATH}")
-    
-    with open(SCALER_PATH, 'rb') as f:
-        scaler = pickle.load(f)
-    print(f"✅ Scaler loaded successfully from {SCALER_PATH}")
+    if os.path.exists(scaler_path):
+        with open(scaler_path, 'rb') as f:
+            SCALER = pickle.load(f)
+        print("Loaded scaler from", scaler_path)
 except Exception as e:
-    print(f"❌ Error loading model/scaler: {e}")
-    model = None
-    scaler = None
+    print("Scaler load failed:", e)
+    SCALER = None
+
+# load models present in models/
+for fn in os.listdir(MODEL_DIR):
+    if fn.endswith('.pkl') or fn.endswith('.joblib'):
+        if fn == 'scaler.pkl' or fn == 'feature_names.pkl':
+            continue
+        name = os.path.splitext(fn)[0]
+        try:
+            with open(os.path.join(MODEL_DIR, fn), 'rb') as f:
+                MODEL_REGISTRY[name] = pickle.load(f)
+            print("Loaded model:", name)
+        except Exception as e:
+            print("Could not load model", fn, e)
 
 # Feature names (must match training data order)
 FEATURE_NAMES = [
@@ -91,11 +104,12 @@ def health_check():
     """Health check endpoint"""
     return jsonify({
         'status': 'healthy',
-        'model_loaded': model is not None,
-        'model_type': 'XGBoost' if model else None
+        'model_loaded': len(MODEL_REGISTRY) > 0,
+        'model_type': list(MODEL_REGISTRY.keys()) if len(MODEL_REGISTRY) > 0 else None
     })
 
 
+# prediction route example (select model_name optional)
 @app.route('/predict', methods=['POST'])
 def predict():
     """
@@ -114,9 +128,6 @@ def predict():
     }
     """
     try:
-        if model is None or scaler is None:
-            return jsonify({'error': 'Model or scaler not loaded'}), 500
-        
         # Get input data
         data = request.get_json()
         
@@ -160,33 +171,38 @@ def predict():
         ]])
         
         # CRITICAL: Scale features using the same scaler from training
-        features_scaled = scaler.transform(features)
+        features_scaled = SCALER.transform(features)
         
         # Make prediction with scaled features
-        prediction = model.predict(features_scaled)[0]
-        probabilities = model.predict_proba(features_scaled)[0]
-        
-        # Get risk details
-        risk_level = RISK_LABELS[prediction]
-        risk_color = RISK_COLORS[prediction]
-        risk_icon = RISK_ICONS[prediction]
-        confidence = float(probabilities[prediction])
-        
-        # Prepare response
-        response = {
-            'success': True,
-            'prediction': {
+        predictions = {}
+        for name, model in MODEL_REGISTRY.items():
+            prediction = model.predict(features_scaled)[0]
+            probabilities = model.predict_proba(features_scaled)[0]
+            
+            # Get risk details
+            risk_level = RISK_LABELS[prediction]
+            risk_color = RISK_COLORS[prediction]
+            risk_icon = RISK_ICONS[prediction]
+            confidence = float(probabilities[prediction])
+            
+            # Store prediction result
+            predictions[name] = {
                 'risk_level': risk_level,
                 'risk_code': int(prediction),
                 'confidence': round(confidence * 100, 2),
                 'color': risk_color,
-                'icon': risk_icon
-            },
-            'probabilities': {
-                'low': round(float(probabilities[0]) * 100, 2),
-                'moderate': round(float(probabilities[1]) * 100, 2),
-                'high': round(float(probabilities[2]) * 100, 2)
-            },
+                'icon': risk_icon,
+                'probabilities': {
+                    'low': round(float(probabilities[0]) * 100, 2),
+                    'moderate': round(float(probabilities[1]) * 100, 2),
+                    'high': round(float(probabilities[2]) * 100, 2)
+                }
+            }
+        
+        # Prepare response
+        response = {
+            'success': True,
+            'predictions': predictions,
             'input_data': {
                 'city': city,
                 'month': month,
@@ -211,8 +227,19 @@ def predict():
 
 @app.route('/model-info', methods=['GET'])
 def model_info():
-    """Get model information"""
+    """Return loaded models and optional comparison results"""
+    loaded = list(MODEL_REGISTRY.keys())
+    comparison = None
+    comp_path = os.path.join(os.path.dirname(__file__), 'results', 'model_comparison_results.csv')
+    try:
+        if os.path.exists(comp_path):
+            comparison = pd.read_csv(comp_path).to_dict(orient='records')
+    except Exception:
+        comparison = None
+
     return jsonify({
+        'loaded_models': loaded,
+        'comparison': comparison,
         'model_type': 'XGBoost Classifier',
         'accuracy': 0.9657,
         'precision': 0.9675,
@@ -228,10 +255,20 @@ def model_info():
 def get_feature_importance():
     """Get actual feature importance from the trained model"""
     try:
-        if model is None:
-            return jsonify({'error': 'Model not loaded'}), 500
+        # Get model name from query parameter or default to xgboost_model
+        model_name = request.args.get('model', 'xgboost_model')
         
-        # Get feature importances from XGBoost model
+        # Get the model from registry
+        if model_name not in MODEL_REGISTRY:
+            return jsonify({'error': f'Model {model_name} not found. Available models: {list(MODEL_REGISTRY.keys())}'}), 404
+        
+        model = MODEL_REGISTRY[model_name]
+        
+        # Check if model has feature_importances_ attribute (tree-based models)
+        if not hasattr(model, 'feature_importances_'):
+            return jsonify({'error': f'Model {model_name} does not support feature importance'}), 400
+        
+        # Get feature importances from the model
         importances = model.feature_importances_
         
         # Create feature importance pairs
