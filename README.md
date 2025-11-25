@@ -63,17 +63,20 @@ Health.Env combines a Flask REST API, a trained XGBoost classifier (96.57% accur
 ├── script.js              # Frontend logic and chart initialization
 ├── styles.css             # Glassmorphic styling
 ├── data/
-│   ├── dengue_india_weekly_with_nulls.csv    # Training dataset
 │   ├── dengue_data_cleaned.csv               # Preprocessed data
 │   ├── model_comparison_results.csv          # Model evaluation metrics
 │   └── tuning_comparison.csv                 # Hyperparameter tuning results
 ├── models/
 │   ├── xgboost_model.pkl                     # Trained XGBoost classifier
+│   ├── knn_dengue_model.pkl                  
 │   ├── scaler.pkl                            # StandardScaler for normalization
 │   ├── feature_names.pkl                     # Feature order reference
-│   └── [alternative models]                  # Other trained classifiers
+│   └── [alternative models]
+├── scripts/
+│   └── compare_models.py                   # Other trained classifiers
 ├── notebooks/              # Jupyter notebooks for training and analysis
-├── results/               # Model performance plots and metrics
+├── results/   
+│   └── model_comparison_results.csv            # Model performance plots and metrics
 ├── docs/                  # Additional documentation
 └── LICENSE               # MIT License
 ```
