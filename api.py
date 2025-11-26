@@ -64,7 +64,8 @@ except Exception as e:
 # load models present in models/
 for fn in os.listdir(MODEL_DIR):
     if fn.endswith('.pkl') or fn.endswith('.joblib'):
-        if fn in ('scaler.pkl', 'feature_names.pkl'):
+        # skip scaler and any feature_names files
+        if fn == 'scaler.pkl' or fn.startswith('feature_names'):
             continue
         name = os.path.splitext(fn)[0]
         model_path = os.path.join(MODEL_DIR, fn)
@@ -83,6 +84,19 @@ for fn in os.listdir(MODEL_DIR):
             print(f"Loaded model (pickle): {name}")
         except Exception as e:
             print("Could not load model", fn, e)
+
+# Load all feature_names files into FEATURE_SETS (name -> list)
+FEATURE_SETS = {}
+for fn in os.listdir(MODEL_DIR):
+    if fn.startswith('feature_names') and fn.endswith('.pkl'):
+        try:
+            with open(os.path.join(MODEL_DIR, fn), 'rb') as f:
+                names = pickle.load(f)
+            if isinstance(names, (list, tuple)):
+                FEATURE_SETS[fn] = list(names)
+                print(f"Loaded feature names from {fn}: {len(names)} features")
+        except Exception as e:
+            print(f"Failed to load feature names from {fn}: {e}")
 
 # Feature names (must match training data order)
 # Try to load feature names file from models/ if available (e.g. feature_names_15.pkl)
@@ -310,20 +324,69 @@ def predict():
             return jsonify({'success': False, 'error': 'No models loaded on server'}), 500
 
         predictions = {}
+        # Prepare mapping from scaler FEATURE_NAMES to indices and raw values
+        scaler_feature_names = FEATURE_NAMES if FEATURE_NAMES is not None else []
+        scaler_name_to_idx = {str(n).strip().lower(): i for i, n in enumerate(scaler_feature_names)}
+        raw_values = {}
+        # raw features vector (before scaling) is 'features' (1, n)
+        if len(features.shape) == 2 and len(scaler_feature_names) == features.shape[1]:
+            for i, fname in enumerate(scaler_feature_names):
+                try:
+                    raw_values[str(fname).strip().lower()] = float(features[0, i])
+                except Exception:
+                    raw_values[str(fname).strip().lower()] = 0.0
+
         for name, model in MODEL_REGISTRY.items():
             try:
-                prediction = model.predict(features_scaled)[0]
-                # Some models may not implement predict_proba; handle gracefully
+                # Determine the feature order this model expects
+                model_n = getattr(model, 'n_features_in_', None)
+                # Try to find a feature_names list that matches model_n
+                model_feature_list = None
+                if model_n is not None:
+                    for fn, flist in FEATURE_SETS.items():
+                        if len(flist) == model_n:
+                            model_feature_list = flist
+                            break
+
+                # If no matching feature_name list was found, but model_n exists,
+                # try to use the first model_n features from scaler ordering
+                indices = None
+                if model_feature_list is not None:
+                    indices = []
+                    for mf in model_feature_list:
+                        idx = scaler_name_to_idx.get(str(mf).strip().lower())
+                        if idx is None:
+                            # missing feature in scaler mapping, will pad with zero
+                            indices.append(None)
+                        else:
+                            indices.append(idx)
+                elif model_n is not None and len(scaler_feature_names) >= model_n:
+                    indices = list(range(model_n))
+
+                # Build model_input from features_scaled by selecting indices
+                if indices is not None:
+                    sel = []
+                    for idx in indices:
+                        if idx is None:
+                            sel.append(0.0)
+                        else:
+                            sel.append(float(features_scaled[0, idx]))
+                    model_input = np.array([sel])
+                else:
+                    # As a last resort, pass full scaled vector
+                    model_input = features_scaled
+
+                # Predict
+                prediction = model.predict(model_input)[0]
                 probabilities = None
                 if hasattr(model, 'predict_proba'):
                     try:
-                        probabilities = model.predict_proba(features_scaled)[0]
+                        probabilities = model.predict_proba(model_input)[0]
                     except Exception:
                         probabilities = None
 
-                # Map risk and confidence
-                risk_level = RISK_LABELS.get(int(prediction), 'Unknown')
                 risk_code = int(prediction)
+                risk_level = RISK_LABELS.get(risk_code, 'Unknown')
                 confidence = None
                 if probabilities is not None and len(probabilities) > risk_code:
                     confidence = float(probabilities[risk_code])
