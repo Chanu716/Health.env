@@ -97,6 +97,23 @@ for fn in os.listdir(MODEL_DIR):
         except Exception as e:
             print(f"Failed to load feature names from {fn}: {e}")
 
+# If scaler is present and feature names length doesn't match, try to find a matching file
+if SCALER is not None:
+    scaler_n = getattr(SCALER, 'n_features_in_', None)
+    if scaler_n is not None and FEATURE_NAMES is not None and len(FEATURE_NAMES) != scaler_n:
+        # search for a feature_names file matching scaler_n
+        for fn in os.listdir(MODEL_DIR):
+            if fn.startswith('feature_names') and fn.endswith('.pkl'):
+                try:
+                    with open(os.path.join(MODEL_DIR, fn), 'rb') as f:
+                        names = pickle.load(f)
+                    if isinstance(names, (list, tuple)) and len(names) == scaler_n:
+                        FEATURE_NAMES = names
+                        print(f"Switched to feature names from {fn} to match scaler ({scaler_n} features)")
+                        break
+                except Exception:
+                    continue
+
 # Fallback default feature list (keeps backward compatibility)
 if FEATURE_NAMES is None:
     FEATURE_NAMES = [
@@ -208,22 +225,76 @@ def predict():
         # Get month number
         month_num = MONTH_MAP.get(month, 7)
         
-        # Create feature array in correct order
-        features = np.array([[
-            year,           # Year
-            week,           # Week
-            temperature,    # Temperature
-            rainfall,       # Rainfall
-            humidity,       # Humidity
-            aqi,           # AQI
-            mosquito,      # Mosquito Density
-            population,    # Population Density
-            cases,         # Dengue Cases
-            coords['lat'], # Latitude
-            coords['lon'], # Longitude
-            month_num      # Month_Num
-        ]])
-        
+        # Build feature vector using FEATURE_NAMES and pad/match to scaler expectations
+        def build_feature_vector(input_data):
+            """Return a numpy array shaped (1, n_features) matching the scaler's expected input.
+
+            It maps known input keys to common feature names and pads missing features with 0.
+            """
+            # simple mapping from common tokens to input keys
+            key_map = {
+                'year': year,
+                'week': week,
+                'temperature': temperature,
+                'average temperature (°c)': temperature,
+                'rainfall': rainfall,
+                'average rainfall (mm)': rainfall,
+                'humidity': humidity,
+                'average humidity (%)': humidity,
+                'aqi': aqi,
+                'air quality index (aqi)': aqi,
+                'mosquito': mosquito,
+                'mosquito density': mosquito,
+                'population': population,
+                'population density': population,
+                'cases': cases,
+                'dengue cases reported': cases,
+                'latitude': coords['lat'],
+                'longitude': coords['lon'],
+                'month_num': month_num,
+                'month': month_num
+            }
+
+            # Prepare base length
+            target_len = None
+            if SCALER is not None:
+                target_len = getattr(SCALER, 'n_features_in_', None)
+            # If we have FEATURE_NAMES, use its length as target
+            if target_len is None and FEATURE_NAMES is not None:
+                target_len = len(FEATURE_NAMES)
+            if target_len is None:
+                target_len = 12
+
+            # Build array of zeros
+            vec = [0.0] * target_len
+
+            # If we have FEATURE_NAMES, fill by matching lowercased names
+            if FEATURE_NAMES is not None:
+                for i, fname in enumerate(FEATURE_NAMES):
+                    lname = str(fname).strip().lower()
+                    # try direct mapping keys
+                    if lname in key_map:
+                        vec[i] = float(key_map[lname])
+                    else:
+                        # try to match by substring
+                        for k, v in key_map.items():
+                            if k in lname or lname in k:
+                                try:
+                                    vec[i] = float(v)
+                                except Exception:
+                                    vec[i] = 0.0
+                                break
+                        # otherwise leave 0.0 (padding)
+            else:
+                # fallback: use default order (12)
+                base = [year, week, temperature, rainfall, humidity, aqi, mosquito, population, cases, coords['lat'], coords['lon'], month_num]
+                for i in range(min(len(base), target_len)):
+                    vec[i] = float(base[i])
+
+            return np.array([vec])
+
+        features = build_feature_vector(data)
+
         # CRITICAL: Scale features using the same scaler from training
         if SCALER is None:
             return jsonify({'success': False, 'error': 'Server scaler is not loaded'}), 500
@@ -340,12 +411,13 @@ def get_feature_importance():
         # Get feature importances from the model
         importances = model.feature_importances_
         
-        # Create feature importance pairs
+        # Create feature importance pairs (handle length mismatch defensively)
         feature_importance = []
         for i, feature in enumerate(FEATURE_NAMES):
+            importance_value = float(importances[i]) if i < len(importances) else 0.0
             feature_importance.append({
                 'feature': feature,
-                'importance': float(importances[i])
+                'importance': importance_value
             })
         
         # Sort by importance (descending)
