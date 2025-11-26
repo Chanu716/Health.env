@@ -130,14 +130,54 @@ async function predictRisk() {
             throw new Error(data.error || 'Prediction failed');
         }
 
-        // Extract prediction results
-        const prediction = data.prediction;
-        const probabilities = data.probabilities;
+        // Extract prediction results - support two response shapes:
+        // 1) { prediction: {...}, probabilities: ... }
+        // 2) { predictions: { model_name: {...}, ... } }
+        let prediction = data.prediction || null;
+        let probabilities = data.probabilities || null;
 
-        let riskLevel = prediction.risk_level.toUpperCase() + ' RISK';
-        let riskClass = prediction.risk_level.toLowerCase();
-        let riskIcon = prediction.icon;
-        let confidence = prediction.confidence / 100;  // Convert back to decimal
+        // If server returned per-model predictions, pick a preferred model
+        if (!prediction && data.predictions) {
+            const preds = data.predictions;
+            // Prefer KNN if available, otherwise pick first successful model
+            const preferred = 'knn_dengue_model';
+            let selectedModel = null;
+            if (preds[preferred] && !preds[preferred].error) {
+                selectedModel = preferred;
+            } else {
+                for (const [m, p] of Object.entries(preds)) {
+                    if (p && !p.error) { selectedModel = m; break; }
+                }
+            }
+            // fallback to first model key even if it contains an error message
+            if (!selectedModel) {
+                const keys = Object.keys(preds);
+                selectedModel = keys.length ? keys[0] : null;
+            }
+
+            if (selectedModel) {
+                prediction = preds[selectedModel];
+                probabilities = prediction && prediction.probabilities ? prediction.probabilities : null;
+                // expose which model was used for debugging / UI (optional)
+                data.model_used = selectedModel;
+            }
+        }
+
+        if (!prediction) {
+            console.error('No prediction object found in API response:', data);
+            throw new Error('No prediction available from API');
+        }
+
+        if (prediction.error) {
+            // Server-side model produced an error
+            console.error('Model returned error:', prediction.error);
+            throw new Error(prediction.error || 'Model returned an error');
+        }
+
+        let riskLevel = (prediction.risk_level || 'Unknown').toUpperCase() + ' RISK';
+        let riskClass = (prediction.risk_level || 'unknown').toLowerCase();
+        let riskIcon = prediction.icon || '';
+        let confidence = (prediction.confidence != null) ? (prediction.confidence / 100) : null;  // Convert back to decimal
 
         // Update prediction location
         const resultCity = document.getElementById('result-city');

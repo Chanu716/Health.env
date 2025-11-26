@@ -498,8 +498,25 @@ def get_feature_importance():
 def get_training_stats():
     """Get statistics from training data"""
     try:
+        # Load training data (be resilient if CSV isn't present in deployed env)
+        data_csv = os.path.join(os.path.dirname(__file__), 'data', 'dengue_india_weekly_with_nulls.csv')
+        if not os.path.exists(data_csv):
+            # Return an empty-but-valid payload so the frontend can render fallbacks
+            return jsonify({
+                'success': True,
+                'monthly_risk': {},
+                'scatter_data': {
+                    'low': {'rainfall': [], 'temperature': []},
+                    'moderate': {'rainfall': [], 'temperature': []},
+                    'high': {'rainfall': [], 'temperature': []}
+                },
+                'city_risk': {},
+                'total_records': 0,
+                'note': 'training CSV not found on server'
+            })
+
         # Load training data
-        df = pd.read_csv('data/dengue_india_weekly_with_nulls.csv')
+        df = pd.read_csv(data_csv)
         
         # Create Month_Num if not exists
         month_map = {
