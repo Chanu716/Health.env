@@ -9,6 +9,7 @@ import os
 import pickle
 import pandas as pd
 import numpy as np
+import joblib
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -44,13 +45,18 @@ MODEL_DIR = os.path.join(os.path.dirname(__file__), 'models')
 MODEL_REGISTRY = {}
 SCALER = None
 
-# load scaler if available
+# load scaler if available (prefer joblib.load for joblib-saved artifacts)
 scaler_path = os.path.join(MODEL_DIR, 'scaler.pkl')
 try:
     if os.path.exists(scaler_path):
-        with open(scaler_path, 'rb') as f:
-            SCALER = pickle.load(f)
-        print("Loaded scaler from", scaler_path)
+        try:
+            SCALER = joblib.load(scaler_path)
+            print("Loaded scaler (joblib) from", scaler_path)
+        except Exception:
+            # fallback to pickle
+            with open(scaler_path, 'rb') as f:
+                SCALER = pickle.load(f)
+            print("Loaded scaler (pickle) from", scaler_path)
 except Exception as e:
     print("Scaler load failed:", e)
     SCALER = None
@@ -58,13 +64,23 @@ except Exception as e:
 # load models present in models/
 for fn in os.listdir(MODEL_DIR):
     if fn.endswith('.pkl') or fn.endswith('.joblib'):
-        if fn == 'scaler.pkl' or fn == 'feature_names.pkl':
+        if fn in ('scaler.pkl', 'feature_names.pkl'):
             continue
         name = os.path.splitext(fn)[0]
+        model_path = os.path.join(MODEL_DIR, fn)
         try:
-            with open(os.path.join(MODEL_DIR, fn), 'rb') as f:
+            # Prefer joblib.load for models saved with joblib
+            try:
+                MODEL_REGISTRY[name] = joblib.load(model_path)
+                print(f"Loaded model (joblib): {name}")
+                continue
+            except Exception:
+                pass
+
+            # Fallback to pickle.load
+            with open(model_path, 'rb') as f:
                 MODEL_REGISTRY[name] = pickle.load(f)
-            print("Loaded model:", name)
+            print(f"Loaded model (pickle): {name}")
         except Exception as e:
             print("Could not load model", fn, e)
 
