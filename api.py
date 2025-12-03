@@ -574,9 +574,11 @@ def get_training_stats():
         # Calculate monthly risk trends
         monthly_risk = {}
         if 'Risk_Level' in df.columns and 'Month_Num' in df.columns:
-            monthly_risk = df.groupby('Month_Num')['Risk_Level'].apply(
+            monthly_risk_raw = df.groupby('Month_Num')['Risk_Level'].apply(
                 lambda x: (x == 2).sum() / len(x) if len(x) > 0 else 0
             ).to_dict()
+            # Convert float keys to integers for JSON serialization
+            monthly_risk = {int(k): v for k, v in monthly_risk_raw.items() if pd.notna(k)}
         
         # Get rainfall vs temperature correlation data
         scatter_data = {
