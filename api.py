@@ -514,6 +514,9 @@ def get_model_comparison():
         
         df = pd.read_csv(results_csv)
         
+        # Normalize column names to lowercase for consistency
+        df.columns = df.columns.str.lower().str.replace('-', '_').str.replace(' ', '_')
+        
         # Convert to list of dictionaries for easy JSON serialization
         models_data = []
         for _, row in df.iterrows():
