@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health.Env - Model Comparison</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;500;600;700&family=Comfortaa:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <!-- Theme Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <span class="theme-icon" id="themeIcon">☀️</span>
+    </button>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="main-title">Health.Env</h1>
+                <p class="subtitle">ML Model Performance Comparison</p>
+            </div>
+            <nav class="header-nav">
+                <a href="/" class="nav-link">🏠 Dashboard</a>
+                <a href="/compare" class="nav-link active">📊 Compare Models</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-container">
+        <div class="container">
+            <!-- Overview Section -->
+            <section class="comparison-overview">
+                <div class="panel-header">
+                    <h2>🎯 Model Performance Overview</h2>
+                    <p class="section-description">Comprehensive comparison of all trained models for dengue risk prediction</p>
+                </div>
+                
+                <div class="best-model-card" id="bestModelCard">
+                    <div class="best-model-badge">🏆 Best Model</div>
+                    <h3 id="bestModelName">Loading...</h3>
+                    <div class="best-model-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Accuracy</span>
+                            <span class="metric-value" id="bestAccuracy">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Precision</span>
+                            <span class="metric-value" id="bestPrecision">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Recall</span>
+                            <span class="metric-value" id="bestRecall">-</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">F1-Score</span>
+                            <span class="metric-value" id="bestF1">-</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Grid -->
+            <div class="comparison-grid">
+                <!-- Metrics Comparison Bar Chart -->
+                <div class="chart-section">
+                    <div class="chart-card">
+                        <h3 class="chart-title">📊 Overall Performance Metrics</h3>
+                        <p class="chart-description">Accuracy comparison across all models</p>
+                        <div id="metricsBarChart" class="chart-large"></div>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="chart-section">
+                    <div class="chart-card">
+                        <h3 class="chart-title">🎯 Multi-Metric Analysis</h3>
+                        <p class="chart-description">Balanced view of all performance dimensions</p>
+                        <div id="radarChart" class="chart-large"></div>
+                    </div>
+                </div>
+
+                <!-- Grouped Bar Chart -->
+                <div class="chart-section full-width">
+                    <div class="chart-card">
+                        <h3 class="chart-title">📈 Detailed Metrics Comparison</h3>
+                        <p class="chart-description">Side-by-side comparison of Accuracy, Precision, Recall, and F1-Score</p>
+                        <div id="groupedBarChart" class="chart-extra-large"></div>
+                    </div>
+                </div>
+
+                <!-- Metrics Table -->
+                <div class="chart-section full-width">
+                    <div class="chart-card">
+                        <h3 class="chart-title">📋 Performance Data Table</h3>
+                        <div class="metrics-table-container">
+                            <table class="metrics-table" id="metricsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Model</th>
+                                        <th>Accuracy</th>
+                                        <th>Precision</th>
+                                        <th>Recall</th>
+                                        <th>F1-Score</th>
+                                        <th>Rank</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="metricsTableBody">
+                                    <tr><td colspan="6">Loading...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Insights -->
+                <div class="chart-section full-width">
+                    <div class="chart-card">
+                        <h3 class="chart-title">💡 Model Insights & Recommendations</h3>
+                        <div class="insights-grid" id="insightsGrid">
+                            <div class="insight-card">
+                                <div class="insight-icon">🔍</div>
+                                <h4>Loading insights...</h4>
+                                <p>Please wait while we analyze the models.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>Health.Env © 2025 | Dengue Risk Prediction System | Powered by ML & Environmental Data</p>
+    </footer>
+
+    <script src="/static/compare.js"></script>
+</body>
+</html>

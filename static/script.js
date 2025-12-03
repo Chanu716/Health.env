@@ -701,6 +701,36 @@ async function initializeCharts() {
     document.getElementById('cityChart').parentElement.addEventListener('click', function() {
         openChartModal('City Risk Distribution Across India', cityData, cityLayout);
     });
+    
+    // Update city statistics dynamically
+    updateCityStats(cityRisks);
+}
+
+// ===========================
+// UPDATE CITY STATISTICS
+// ===========================
+function updateCityStats(cityRisks) {
+    if (!cityRisks || cityRisks.length === 0) return;
+    
+    // Count risk levels based on thresholds
+    let highCount = 0;
+    let moderateCount = 0;
+    let lowCount = 0;
+    
+    cityRisks.forEach(risk => {
+        if (risk >= 0.7) highCount++;
+        else if (risk >= 0.4) moderateCount++;
+        else lowCount++;
+    });
+    
+    // Update stat cards
+    const statHigh = document.querySelector('.stat-high .stat-number');
+    const statModerate = document.querySelector('.stat-moderate .stat-number');
+    const statLow = document.querySelector('.stat-low .stat-number');
+    
+    if (statHigh) statHigh.textContent = highCount;
+    if (statModerate) statModerate.textContent = moderateCount;
+    if (statLow) statLow.textContent = lowCount;
 }
 
 // ===========================

@@ -26,6 +26,15 @@ def serve_index():
         return jsonify({'error': 'Index file not found'}), 404
 
 
+@app.route('/compare', methods=['GET'])
+def serve_compare():
+    """Render the model comparison page from `templates/compare.html`."""
+    try:
+        return render_template('compare.html')
+    except Exception:
+        return jsonify({'error': 'Compare page not found'}), 404
+
+
 @app.route('/<path:filename>', methods=['GET'])
 def serve_files(filename):
     # Serve JS/CSS and other static assets from repo root if present
@@ -489,6 +498,37 @@ def get_feature_importance():
         return jsonify({
             'success': True,
             'feature_importance': feature_importance
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@app.route('/api/model-comparison', methods=['GET'])
+def get_model_comparison():
+    """Get model comparison metrics from results CSV"""
+    try:
+        # Load model comparison results
+        results_csv = os.path.join(os.path.dirname(__file__), 'results', 'model_comparison_results.csv')
+        if not os.path.exists(results_csv):
+            return jsonify({'error': 'Model comparison results not found'}), 404
+        
+        df = pd.read_csv(results_csv)
+        
+        # Convert to list of dictionaries for easy JSON serialization
+        models_data = []
+        for _, row in df.iterrows():
+            models_data.append({
+                'model': row['model'].replace('_', ' ').title(),
+                'model_key': row['model'],
+                'accuracy': float(row['accuracy']),
+                'precision': float(row['precision']),
+                'recall': float(row['recall']),
+                'f1_score': float(row['f1_score'])
+            })
+        
+        return jsonify({
+            'success': True,
+            'models': models_data
         })
     except Exception as e:
         return jsonify({'error': str(e)}), 500
