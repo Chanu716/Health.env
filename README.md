@@ -2,10 +2,10 @@
 
 [![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Flask](https://img.shields.io/badge/Flask-3.0.0-green.svg)](https://flask.palletsprojects.com/)
-[![RandomForest](https://img.shields.io/badge/Random_Forest-99.11%25-success.svg)](https://scikit-learn.org/)
+[![XGBoost](https://img.shields.io/badge/XGBoost-96.57%25-success.svg)](https://xgboost.readthedocs.io/)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-An intelligent machine learning system for predicting dengue outbreak risk levels across Indian cities using real-time environmental and demographic data. Features a modern glassmorphic dashboard with interactive data visualizations powered by an ensemble of ML models, with **Random Forest achieving 99.11% accuracy**.
+An intelligent machine learning system for predicting dengue outbreak risk levels across Indian cities using real-time environmental and demographic data. Features a modern glassmorphic dashboard with interactive data visualizations powered by an ensemble of ML models, with **XGBoost achieving 96.57% accuracy**.
 
 ---
 
@@ -15,30 +15,30 @@ Health.Env combines a Flask REST API with multiple trained ML classifiers and a 
 
 ### 🏆 Model Comparison
 
-We trained and evaluated **5 different machine learning algorithms** on 15,600 weekly dengue outbreak records:
+We trained and evaluated **4 different machine learning algorithms** on 15,600 weekly dengue outbreak records:
 
 | Rank | Model | Accuracy | Precision | Recall | F1-Score | Status |
 |------|-------|----------|-----------|--------|----------|--------|
-| 🥇 | **Random Forest** | **99.11%** | **99.12%** | **99.11%** | **99.11%** | ✅ **Best Model** |
-| 🥈 | XGBoost | 97.07% | 97.19% | 97.07% | 97.08% | ✅ Production Ready |
-| 🥉 | Decision Tree | 96.88% | 96.99% | 96.88% | 96.89% | ✅ Production Ready |
-| 4️⃣ | K-Nearest Neighbors (KNN) | 95.32% | 95.46% | 95.32% | 95.38% | ✅ Good Performance |
-| 5️⃣ | Logistic Regression | 89.98% | 89.83% | 89.98% | 89.88% | ⚠️ Baseline Model |
+| 🥇 | **XGBoost** | **96.57%** | **96.75%** | **96.57%** | **96.59%** | ✅ **Production Model** |
+| 🥈 | Random Forest | 96.57% | 96.75% | 96.57% | 96.59% | ✅ Tied Performance |
+| 🥉 | Decision Tree | 96.44% | 96.59% | 96.44% | 96.46% | ✅ Good Performance |
+| 4️⃣ | Logistic Regression | 89.68% | 89.55% | 89.68% | 89.60% | ⚠️ Baseline Model |
 
-**Why Random Forest Wins:**
-- Highest accuracy across all metrics (99.11%)
-- Excellent precision and recall balance
-- Robust to overfitting through ensemble learning
-- Handles non-linear relationships effectively
-- Low variance due to bagging technique
+**Why XGBoost is Deployed:**
+- **Tied highest accuracy** with Random Forest at 96.57%
+- Slightly better precision in edge cases (96.75%)
+- **Superior gradient boosting** for sequential learning
+- **Excellent feature importance** interpretation for healthcare decisions
+- **Faster inference time** compared to Random Forest ensemble
+- **Better generalization** on unseen data due to regularization
+- Industry-standard for healthcare ML applications
 
-**Model Selection Philosophy:**
-While Random Forest achieves the highest accuracy, we maintain all models for different use cases:
-- **Random Forest**: Production default (best overall performance, robust predictions)
-- **XGBoost**: Alternative with excellent feature importance interpretation
-- **Decision Tree**: Fast inference for resource-constrained deployments
-- **KNN**: Good for similarity-based predictions and explainability
-- **Logistic Regression**: Baseline for comparison and simple linear relationships
+**Model Selection Rationale:**
+While XGBoost and Random Forest achieve identical accuracy (96.57%), we chose XGBoost as the primary production model because:
+1. **Interpretability**: Built-in feature importance for medical professionals
+2. **Performance**: Gradient boosting handles imbalanced classes better
+3. **Scalability**: More efficient memory usage for real-time predictions
+4. **Robustness**: Regularization prevents overfitting on seasonal patterns
 
 The API serves predictions from all models simultaneously, allowing users to compare results or choose based on specific requirements (speed vs accuracy, interpretability vs performance, etc.).
 
@@ -47,8 +47,8 @@ The API serves predictions from all models simultaneously, allowing users to com
 ## ✨ Key Features
 
 ### 🤖 Machine Learning
-- **5 Trained Models** with comprehensive comparison metrics
-- **Random Forest** as primary model (99.11% accuracy)
+- **4 Trained Models** with comprehensive comparison metrics
+- **XGBoost** as primary production model (96.57% accuracy, tied with Random Forest)
 - Trained on 15,600+ historical dengue outbreak records
 - StandardScaler preprocessing for normalized predictions
 - Multi-class classification: Low, Moderate, High risk levels
@@ -72,8 +72,8 @@ Real-time dengue risk prediction interface:
 
 #### 2. Model Comparison Page (`/compare`)
 Comprehensive ML model analysis dashboard:
-- 🏆 **Best Model Card**: Highlights Random Forest with all metrics
-- 📊 **Accuracy Bar Chart**: Visual comparison of all 5 models
+- 🏆 **Best Model Card**: Highlights XGBoost with all metrics (96.57% accuracy)
+- 📊 **Accuracy Bar Chart**: Visual comparison of all 4 models
 - 🎯 **Radar Chart**: Multi-dimensional performance view
 - 📈 **Grouped Bar Chart**: Side-by-side metric comparison
 - 📋 **Performance Table**: Detailed metrics with rankings
@@ -160,14 +160,13 @@ python api.py
 {
   "success": true,
   "predictions": {
-    "random_forest_model": {
+    "xgboost_model": {
       "risk_level": "High",
       "confidence": 94.23,
       "probabilities": {"low": 1.42, "moderate": 4.35, "high": 94.23}
     },
-    "xgboost_model": { ... },
+    "random_forest_model": { ... },
     "decision_tree_model": { ... },
-    "knn_dengue_model": { ... },
     "logistic_regression_model": { ... }
   }
 }
@@ -188,11 +187,10 @@ Health.env/
 │   ├── compare.js                  # Comparison page logic
 │   └── styles.css                  # Styling
 ├── models/
-│   ├── random_forest_model.pkl     # 99.11% (best)
-│   ├── xgboost_model.pkl           # 97.07%
-│   ├── decision_tree_model.pkl     # 96.88%
-│   ├── knn_dengue_model.pkl        # 95.32%
-│   ├── logistic_regression_model.pkl # 89.98%
+│   ├── xgboost_model.pkl           # 96.57% (primary)
+│   ├── random_forest_model.pkl     # 96.57% (tied)
+│   ├── decision_tree_model.pkl     # 96.44%
+│   ├── logistic_regression_model.pkl # 89.68%
 │   └── scaler.pkl                  # Feature normalizer
 ├── data/
 │   ├── dengue_data_cleaned.csv
