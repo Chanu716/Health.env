@@ -15,17 +15,15 @@ Health.Env combines a Flask REST API with multiple trained ML classifiers and a 
 
 ### 🏆 Model Comparison
 
-We trained and evaluated **4 primary machine learning algorithms** on 15,600 weekly dengue outbreak records (2015-2023, 30 Indian cities):
+We trained and evaluated **5 machine learning algorithms** on 15,600 weekly dengue outbreak records (2015-2023, 30 Indian cities):
 
-| Rank | Model | Accuracy | Precision | Recall | F1-Score | Training Time | Status |
-|------|-------|----------|-----------|--------|----------|---------------|--------|
-| 🥇 | **XGBoost** | **96.57%** | **96.75%** | **96.57%** | **96.59%** | 0.94s | ✅ **Production Model** |
-| 🥈 | Random Forest | 96.57% | 96.75% | 96.57% | 96.59% | 0.84s | ✅ Tied Accuracy |
-| 🥉 | Decision Tree | 96.44% | 96.59% | 96.44% | 96.46% | 0.18s | ✅ Fastest |
-| 4️⃣ | Logistic Regression | 89.68% | 89.55% | 89.68% | 89.60% | 0.15s | ⚠️ Baseline |
-
-**Additional Model:**
-- **K-Nearest Neighbors (KNN)**: Trained and available for predictions via API (`knn_dengue_model`), optimized for similarity-based classification with distance-weighted voting
+| Rank | Model | Accuracy | Precision | Recall | F1-Score | Status |
+|------|-------|----------|-----------|--------|----------|--------|
+| 🥇 | **XGBoost** | **96.57%** | **96.75%** | **96.57%** | **96.59%** | ✅ **Production Model** |
+| 🥈 | Random Forest | 96.57% | 96.75% | 96.57% | 96.59% | ✅ Tied Accuracy |
+| 🥉 | Decision Tree | 96.44% | 96.59% | 96.44% | 96.46% | ✅ High Accuracy |
+| 4️⃣ | K-Nearest Neighbors | 95.32% | 95.46% | 95.32% | 95.38% | ✅ Instance-Based |
+| 5️⃣ | Logistic Regression | 89.68% | 89.55% | 89.68% | 89.60% | ⚠️ Baseline |
 
 **Why XGBoost is Deployed:**
 - **Tied highest accuracy** with Random Forest at 96.57%
@@ -62,10 +60,10 @@ The API serves predictions from **all 5 models simultaneously** (XGBoost, Random
 ## ✨ Key Features
 
 ### 🤖 Machine Learning
-- **5 Trained Models**: XGBoost, Random Forest, Decision Tree, Logistic Regression, K-Nearest Neighbors
-- **4 Officially Evaluated** with comprehensive comparison metrics (XGBoost, RF, DT, LR)
+- **5 Trained Models**: XGBoost, Random Forest, Decision Tree, K-Nearest Neighbors, Logistic Regression
+- **All 5 officially evaluated** with comprehensive comparison metrics
 - **XGBoost** as primary production model (96.57% accuracy, tied with Random Forest)
-- **KNN** available for instance-based predictions and explainability
+- **KNN** provides instance-based predictions with 95.32% accuracy
 - Trained on 15,600+ weekly historical records (2015-2023)
 - StandardScaler preprocessing for normalized predictions
 - Multi-class classification: Low, Moderate, High risk levels
@@ -90,8 +88,7 @@ Real-time dengue risk prediction interface:
 #### 2. Model Comparison Page (`/compare`)
 Comprehensive ML model analysis dashboard:
 - 🏆 **Best Model Card**: Highlights XGBoost with all metrics (96.57% accuracy)
-- 📊 **Accuracy Bar Chart**: Visual comparison of officially evaluated models
-- 📈 **Training Time Comparison**: Performance vs speed tradeoffs
+- 📊 **Accuracy Bar Chart**: Visual comparison of all 5 models
 - 🎯 **Radar Chart**: Multi-dimensional performance view
 - 📈 **Grouped Bar Chart**: Side-by-side metric comparison
 - 📋 **Performance Table**: Detailed metrics with rankings

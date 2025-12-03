@@ -647,60 +647,6 @@ async function initializeCharts() {
 
     // Chart 4: City Risk Distribution (Real Data from training)
     let cityNames = ['Delhi', 'Mumbai', 'Chennai', 'Kolkata', 'Bengaluru', 'Hyderabad', 'Pune', 'Ahmedabad', 'Jaipur', 'Lucknow', 'Indore', 'Bhopal', 'Nagpur', 'Surat', 'Kanpur'];
-    let cityRisks = [0.85, 0.72, 0.68, 0.78, 0.45, 0.55, 0.62, 0.38, 0.70, 0.82, 0.25, 0.30, 0.58, 0.42, 0.75]; // Fallback
-    
-    if (chartDataCache.trainingStats && chartDataCache.trainingStats.city_risk) {
-        const cityRiskData = chartDataCache.trainingStats.city_risk;
-        cityNames = Object.keys(cityRiskData);
-        cityRisks = Object.values(cityRiskData);
-    }
-    
-    const cityData = [{
-        x: cityNames,
-        y: cityRisks,
-        type: 'bar',
-        marker: {
-            color: cityRisks,
-            colorscale: [[0, '#00ff88'], [0.5, '#ffcc00'], [1, '#ff3366']],
-            showscale: true,
-            colorbar: {
-                title: 'Risk',
-                titleside: 'right',
-                tickmode: 'linear',
-                tick0: 0,
-                dtick: 0.25
-            }
-        }
-    }];
-
-    const cityLayout = {
-        paper_bgcolor: 'rgba(0,0,0,0)',
-        plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { color: textColor, family: 'Barlow' },
-        margin: { l: 60, r: 20, t: 40, b: 80 },
-        xaxis: { 
-            title: 'City',
-            showgrid: false,
-            tickangle: -45,
-            color: textColor
-        },
-        yaxis: { 
-            title: 'Risk Score',
-            showgrid: true, 
-            gridcolor: gridColor,
-            color: textColor
-        }
-    };
-
-    Plotly.newPlot('cityChart', cityData, cityLayout, { 
-        responsive: true, 
-        displayModeBar: false 
-    });
-    
-    // Add click event for zoom
-    document.getElementById('cityChart').parentElement.addEventListener('click', function() {
-        openChartModal('City Risk Distribution Across India', cityData, cityLayout);
-    });
 }
 
 // ===========================
